@@ -12,7 +12,7 @@ if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Consulta para obtener los usuarios
+// Consulta/Leer para obtener los usuarios
 $sql = "SELECT id, name, password FROM users";
 $result = $conn->query($sql);
 
