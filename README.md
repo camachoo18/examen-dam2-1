@@ -104,3 +104,66 @@ El servidor web estará disponible en (http://localhost:8080).
 
 ## Paso 6: Verificar el Funcionamiento
 Abr mi navegador y voy a `http://localhost:8080` para ver la página "Hola Mundo".
+
+# Sprint 3: Apache + PHP
+
+## Paso 1: Creamos la Carpeta y Configuramos el Dockerfile
+1. Copiamos la carpeta `apache` creada en el Sprint 2 y renómbrala a `apache-php`:
+   ```bash
+   cp -r apache apache-php
+   cd apache-php
+   ```
+
+2. Edita el archivo `Dockerfile` con el siguiente contenido:
+
+```dockerfile
+# Usamos la imagen base de Apache con soporte para PHP
+FROM php:7.4-apache
+
+# Copiamos el archivo index.php al directorio de contenido web de Apache
+COPY index.php /var/www/html/
+```
+
+## Paso 2: Creamos el Archivo `index.php`
+Creamos un archivo `index.php` en la carpeta con el siguiente contenido:
+
+```php
+<?php
+// Muestra un mensaje de Hola Mundo
+echo "<h1>Hola Mundo</h1>";
+
+// Muestra la fecha y hora actual
+echo "<p>Fecha y hora actual: " . date('Y-m-d H:i:s') . "</p>";
+
+// Muestra la versión de PHP
+echo "<p>Versión de PHP: " . phpversion() . "</p>";
+
+// Muestra la versión de Apache
+echo "<p>Versión de Apache: " . apache_get_version() . "</p>";
+
+// Muestra la IP del servidor
+echo "<p>IP del servidor: " . $_SERVER['SERVER_ADDR'] . "</p>";
+
+// Muestra la IP del cliente
+echo "<p>IP del cliente: " . $_SERVER['REMOTE_ADDR'] . "</p>";
+?>
+```
+
+## Paso 3: Construimos la Imagen
+Ejecutamos el siguiente comando para construir la imagen Docker:
+
+```bash
+docker build -t apache-php-info .
+```
+
+## Paso 4: Lanzamos el Contenedor
+Iniciamos un contenedor a partir de la imagen creada:
+
+```bash
+docker run -d -p 8081:80 --name apache-php-servidor apache-php-info
+```
+
+El servidor web estará disponible en (http://localhost:8081).
+
+## Paso 5: Verificar el Funcionamiento
+Abrimos un navegador y vamos a `http://localhost:8081` para ver la información dinámica generada por el archivo `index.php`.
