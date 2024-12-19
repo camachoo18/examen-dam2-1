@@ -41,3 +41,66 @@ docker logout
 ```
 
 Esto asegurará que no queden sesiones activas no deseadas en nuestro sistema.
+
+# Sprint 2: Apache
+
+Este documento describe los pasos realizados para crear un servidor web Apache que sirva un archivo `index.html` con el mensaje "Hola Mundo".
+
+## Paso 1: Creamos la Carpeta y el Archivo Dockerfile
+1. Creamos una carpeta llamada `apache`:
+   ```bash
+   mkdir apache
+   cd apache
+   ```
+
+2. Dentro de la carpeta, creamos un archivo llamado `Dockerfile`:
+   ```bash
+   touch Dockerfile
+   ```
+
+## Paso 2: Configurar el Dockerfile
+Editamos el archivo `Dockerfile` con el siguiente contenido:
+
+```dockerfile
+# Usa la imagen base de Apache
+FROM httpd:2.4
+
+# Copiamos el archivo index.html al directorio de contenido web de Apache
+COPY index.html /usr/local/apache2/htdocs/
+```
+
+## Paso 3: Creamos el Archivo `index.html`
+Creamos un archivo `index.html` en la misma carpeta con el siguiente contenido:
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hola Mundo</title>
+</head>
+<body>
+    <h1>Hola Mundo</h1>
+</body>
+</html>
+```
+
+## Paso 4: Construir la Imagen
+Ejecutamos el siguiente comando para construir la imagen Docker:
+
+```bash
+docker build -t apache-hola-mundo .
+```
+
+## Paso 5: Lanzamos el Contenedor
+Iniciamos un contenedor a partir de la imagen creada:
+
+```bash
+docker run -d -p 8080:80 --name apache-servidor apache-hola-mundo
+```
+
+El servidor web estará disponible en (http://localhost:8080).
+
+## Paso 6: Verificar el Funcionamiento
+Abr mi navegador y voy a `http://localhost:8080` para ver la página "Hola Mundo".
