@@ -170,3 +170,95 @@ El servidor web estará disponible en (http://localhost:8081).
 Abrimos un navegador y vamos a `http://localhost:8081` para ver la información dinámica generada por el archivo `index.php`.
 ![alt text](image-1.png)
 
+# Sprint 4 - PHP
+Dentro de la carpeta que hemos creado de apache-php, haremos lo siguiente
+
+## Archivos creados
+
+### 1. `info.php`
+Este archivo muestra toda la información de configuración de PHP utilizando la función `phpinfo()`. Al acceder a este archivo desde un navegador, podrás ver la configuración de PHP en tu servidor.
+```php
+<?php
+// Muestra toda la información de configuración de PHP
+phpinfo();
+?>
+
+```
+
+### 2. `random.php`
+
+```php
+<?php
+// Genera un número aleatorio entre 1 y 100
+$randomNumber = rand(1, 100);
+
+// Determina si el número es par o impar
+$paridad = ($randomNumber % 2 == 0) ? 'par' : 'impar';
+
+// Crea un array con al menos 5 elementos
+$elementos = ['sushi', 'ramen', 'chocolate Milka', 'tulipanes', 'black baccara'];
+
+// Selecciona un elemento aleatorio del array
+$elementoAleatorio = $elementos[array_rand($elementos)];
+
+// Crea un array asociativo con los resultados
+$response = [
+    'numero' => $randomNumber,
+    'mensaje' => "El número $randomNumber es $paridad.",
+    'elemento' => $elementoAleatorio
+];
+
+
+// Devuelve el resultado en formato JSON
+echo json_encode($response);
+?>
+```
+Este archivo devuelve un JSON con:
+- Un número aleatorio entre 1 y 100.
+- Un mensaje indicando si el número es par o impar.
+- Un elemento aleatorio de un array con al menos 5 elementos.
+
+### 3. Docker
+
+Para lanzar el servidor Apache-PHP, se utilizó Docker. El proceso fue:
+1. Modificamos nuestro `Dockerfile` con la imagen oficial de PHP y Apache.
+```dockerfile
+## Usamos la imagen base de PHP con soporte para Apache
+FROM php:7.4-apache
+
+# Copiamos todos los archivos al directorio de contenido web de Apache
+COPY . /var/www/html/
+
+# Establecemos el ServerName para evitar la advertencia
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# Ajustamos los permisos para asegurar que Apache pueda acceder a los archivos
+RUN chown -R www-data:www-data /var/www/html
+
+# Expone el puerto 80 (por defecto Apache usa este puerto)
+EXPOSE 80
+
+
+```
+2. Construir la imagen con el comando `docker build -t php-apache .`.
+      Construir la Imagen
+Ejecutamos el siguiente comando para construir la imagen Docker:
+
+```bash
+docker build -t php-apache .
+
+```
+3. Lanzar el servidor localmente con `docker run -p 80:80 php-apache`.
+         Lanzar la Imagen
+Ejecutamos el siguiente comando para ejecutar la imagen Docker:
+
+```bash
+docker run -p 80:80 php-apache
+
+```
+Para lanzarla localmente, haremos lo siguiente:
+http://localhost/info.php-----Esto debería mostrarte toda la información de configuración de PHP, tal como lo especifica la función phpinfo().
+![alt text](image-2.png)
+
+http://localhost/random.php-----Esto debería devolver un JSON con el número aleatorio, el mensaje sobre su paridad (si es par o impar), y un elemento aleatorio del array que definiste en el archivo PHP.
+![alt text](image-3.png)
