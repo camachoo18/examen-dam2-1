@@ -437,4 +437,14 @@ Subir la imagen:
 docker push camachoo18/apache-php-sql:latest
 
 ```
+# Apache + PHP + MySQL Docker Environment
 
+Este proyecto proporciona un entorno de servidor web Apache con PHP y MySQL usando Docker. Con esta configuración, puedes levantar un entorno completo con solo un comando.
+
+## Comando para lanzar el entorno
+
+Para lanzar el entorno completo con Apache, PHP y MySQL, solo necesitas ejecutar el siguiente comando:
+
+```bash
+docker-compose up -d
+```
