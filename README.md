@@ -425,3 +425,16 @@ Si todo está bien, verás el mensaje "Conexión exitosa !".
 Ver usuarios: http://localhost/users.php
 Esto mostrará la lista de usuarios de la base de datos.
 ![alt text](image-5.png)
+
+## 9. Publicar en Docker Hub(Teniendo en cuenta que estes logueado)
+Etiquetar la imagen:
+```bash
+docker tag php-apache camachoo18/apache-php-sql:latest
+
+```
+Subir la imagen:
+```bash
+docker push camachoo18/apache-php-sql:latest
+
+```
+
