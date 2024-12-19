@@ -262,3 +262,166 @@ http://localhost/info.php-----Esto debería mostrarte toda la información de co
 
 http://localhost/random.php-----Esto debería devolver un JSON con el número aleatorio, el mensaje sobre su paridad (si es par o impar), y un elemento aleatorio del array que definiste en el archivo PHP.
 ![alt text](image-3.png)
+
+
+# Sprint 5: Composing con Apache + PHP + MySQL
+
+## 1. Estructura de la carpeta
+apache-php-mysql/
+├── apache-php/
+│   ├── Dockerfile
+│   ├── info.php
+│   ├── index.php
+│   ├── random.php
+├── docker-compose.yml
+└── init.sql
+## 2. Dockerfile
+
+```dockerfile
+# Usamos la imagen base de PHP con soporte para Apache
+FROM php:7.4-apache
+
+# Instalamos la extensión mysqli
+RUN docker-php-ext-install mysqli
+
+# Copiamos todos los archivos al directorio de contenido web de Apache
+COPY . /var/www/html/
+
+# Ajustamos los permisos para asegurar que Apache pueda acceder a los archivos
+RUN chown -R www-data:www-data /var/www/html
+
+# Habilitamos el módulo rewrite (si lo necesitas)
+RUN a2enmod rewrite
+
+# Expone el puerto 80 (por defecto Apache usa este puerto)
+EXPOSE 80
+
+```
+## 3. Archivo docker-compose.yml
+```yaml
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./apache-php
+    container_name: apache-php-container
+    ports:
+      - "80:80"
+    volumes:
+      - ./apache-php:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: users_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+    ports:
+      - "3306:3306"
+
+networks:
+  app-network:
+    driver: bridge
+  
+
+```
+
+##  4. Archivo init.sql
+```sql
+CREATE DATABASE IF NOT EXISTS my_database;
+USE users_db;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+INSERT INTO users (name, password) VALUES ('Alice', 'password123');
+INSERT INTO users (name, password) VALUES ('Bob', 'password456');
+INSERT INTO users (name, password) VALUES ('Charlie', 'password789');
+```
+
+## 5. Modificar index.php para conectar a MySQL
+Le añado a mi index.php lo siguiente para comprobar que conecta a mi base de datos.
+```php
+<?php
+$servername = "db"; // El nombre del servicio del contenedor de MySQL (según docker-compose.yml)
+$username = "user"; // El usuario configurado en MySQL
+$password = "password"; // La contraseña configurada en MySQL
+$dbname = "users_db"; // La base de datos configurada en MySQL
+
+// Crear conexión
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+echo "Conexión exitosa";
+?>
+
+
+```
+## 6. Crear users.php para mostrar usuarios de la base de datos
+```php
+<?php
+$servername = "db";
+$username = "user";
+$password = "password";
+$dbname = "users_db";
+
+// Crear conexión
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Comprobar conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+
+// Consulta para obtener los usuarios
+$sql = "SELECT id, name, password FROM users";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    // Mostrar cada usuario
+    while($row = $result->fetch_assoc()) {
+        echo "id: " . $row["id"]. " - Name: " . $row["name"]. " - Password: " . $row["password"]. "<br>";
+    }
+} else {
+    echo "0 resultados";
+}
+$conn->close();
+?>
+
+```
+## 7. Construir y lanzar el entorno con Docker Compose
+En la terminal, navego al directorio apache-php-mysql y ejecuto el siguiente comando para construir y lanzar todos los contenedores definidos en docker-compose.yml
+```bash
+docker-compose up --build
+
+```
+
+Este comando construirá las imágenes de Docker y levantará los contenedores para Apache, PHP y MySQL.
+
+## 8. Acceder a los archivos
+Una vez que Docker haya iniciado los contenedores, abre tu navegador y visita las siguientes URLs:
+
+Página principal de Apache con PHP: http://localhost
+Si todo está bien, verás el mensaje "Conexión exitosa !".
+![alt text](image-4.png)
+
+Ver usuarios: http://localhost/users.php
+Esto mostrará la lista de usuarios de la base de datos.
+![alt text](image-5.png)
