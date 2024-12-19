@@ -448,3 +448,6 @@ Para lanzar el entorno completo con Apache, PHP y MySQL, solo necesitas ejecutar
 ```bash
 docker-compose up -d
 ```
+
+# Hacer CRUD
+He realizado un CRUD basico, para que puedes ver los usuarios en `http://localhost/users.php`, eliminar usuarios mediante el id `http://localhost/delete.php`, updatear los usuarios mediante nombre y password `http://localhost/update.php` y finalmente puedes crear nuevos usuarios entrando aquí `http://localhost/users.php`
