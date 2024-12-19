@@ -12,7 +12,7 @@
    -git commit -m "Compruebo commit y push!"
    -git push origin master
 
-   2. # Documentación para Comprobar la Sesión en Docker Hub
+2. **Documentación para Comprobar la Sesión en Docker Hub**
 
 ## Paso 1: Abrimos una Terminal
 Asegurarnos de que en la terminal o consola de nuestro sistema que tenemos instalado Docker.
