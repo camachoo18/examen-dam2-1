@@ -104,6 +104,7 @@ El servidor web estará disponible en (http://localhost:8080).
 
 ## Paso 6: Verificar el Funcionamiento
 Abr mi navegador y voy a `http://localhost:8080` para ver la página "Hola Mundo".
+![alt text](image.png)
 
 # Sprint 3: Apache + PHP
 
@@ -167,3 +168,5 @@ El servidor web estará disponible en (http://localhost:8081).
 
 ## Paso 5: Verificar el Funcionamiento
 Abrimos un navegador y vamos a `http://localhost:8081` para ver la información dinámica generada por el archivo `index.php`.
+![alt text](image-1.png)
+
